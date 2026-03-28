@@ -1,0 +1,18 @@
+{% extends 'jobs/base.html' %}
+
+{% block content %}
+<div class="form-container" style="max-width: 800px;">
+    <h2>Update Profile</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="user-info" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            {{ u_form.as_p }}
+        </div>
+        <hr style="margin: 2rem 0;">
+        <div class="profile-info">
+            {{ p_form.as_p }}
+        </div>
+        <button type="submit" class="btn" style="width: 100%; margin-top: 2rem;">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

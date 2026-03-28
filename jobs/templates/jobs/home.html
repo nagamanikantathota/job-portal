@@ -1,0 +1,93 @@
+{% extends 'jobs/base.html' %}
+
+{% block content %}
+<div class="hero">
+    <h1>Find Your Next <br>Career Milestone</h1>
+    <p>We connect the world's most innovative companies with the most passionate talent. Search through 10,000+ opportunities today.</p>
+    <form class="search-box" action="{% url 'job_list' %}" method="get">
+        <input type="text" name="q" placeholder="Job title, keywords, or company">
+        <input type="text" name="location" placeholder="City, State, or Remote">
+        <button type="submit" class="btn">Search Jobs</button>
+    </form>
+</div>
+
+<section class="categories-section" style="margin-top: 5rem;">
+    <div style="text-align: center; margin-bottom: 3.5rem;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Explore by Category</h2>
+        <p style="color: var(--slate-500); font-weight: 500;">Discover opportunities across various industries and domains.</p>
+    </div>
+    <div class="jobs-grid">
+        {% for category in categories %}
+        <a href="{% url 'job_list' %}?category={{ category.id }}" class="job-card" style="text-align: center; justify-content: center; min-height: 180px; padding: 2.5rem;">
+            <div style="width: 60px; height: 60px; background: rgba(99, 102, 241, 0.1); border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i class="fas {{ category.icon_class|default:'fa-briefcase' }} fa-xl" style="color: var(--primary-color);"></i>
+            </div>
+            <h3 style="font-size: 1.125rem; margin-bottom: 0.5rem;">{{ category.name }}</h3>
+            <p class="meta" style="margin: 0; justify-content: center;">{{ category.job_count }} Open Positions</p>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="featured-jobs" style="margin-top: 6rem; background: white; padding: 5rem 2rem; border-radius: 2rem; margin-bottom: 4rem; border: 1px solid var(--slate-200);">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem;">
+        <div>
+            <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Featured Opportunities</h2>
+            <p style="color: var(--slate-500); font-weight: 500;">Hand-picked jobs from our top-tier company partners.</p>
+        </div>
+        <a href="{% url 'job_list' %}" class="btn btn-secondary">View All Listings <i class="fas fa-arrow-right"></i></a>
+    </div>
+    
+    <div class="jobs-grid">
+        {% for job in featured_jobs %}
+        <div class="job-card" style="border-color: var(--slate-100);">
+            {% if job.company.logo %}
+                <img src="{{ job.company.logo.url }}" alt="{{ job.company.name }}" class="company-logo">
+            {% else %}
+                <div class="company-logo" style="display: flex; align-items: center; justify-content: center; background: #f1f5f9;">
+                    <i class="fas fa-building fa-xl" style="color: #cbd5e1;"></i>
+                </div>
+            {% endif %}
+            
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem;">
+                <span class="category-badge" style="margin: 0;">{{ job.category.name|default:"General" }}</span>
+                <span class="category-badge" style="margin: 0; background: rgba(16, 185, 129, 0.1); color: var(--success-color);">{{ job.job_type }}</span>
+            </div>
+            
+            <h3 style="margin-bottom: 1rem;"><a href="{% url 'job_detail' job.pk %}">{{ job.title }}</a></h3>
+            <p class="meta"><i class="fas fa-map-marker-alt" style="width: 1rem;"></i> {{ job.location }}</p>
+            <p class="meta"><i class="fas fa-building" style="width: 1rem;"></i> {{ job.company.name }}</p>
+            
+            <div class="actions" style="border-top-style: dashed;">
+                {% if job.salary_min or job.salary_max %}
+                    <span style="font-weight: 800; color: var(--slate-900); font-size: 1.125rem;">
+                        {% if job.salary_min %}${{ job.salary_min|floatformat:0 }}{% endif %}
+                        {% if job.salary_min and job.salary_max %} - {% endif %}
+                        {% if job.salary_max %}${{ job.salary_max|floatformat:0 }}{% endif %}
+                    </span>
+                {% else %}
+                    <span style="font-weight: 600; color: var(--slate-400); font-size: 0.875rem;">Salary Undisclosed</span>
+                {% endif %}
+                <a href="{% url 'job_detail' job.pk %}" class="btn btn-sm">Details</a>
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 4rem;">
+            <i class="fas fa-search fa-3x" style="color: var(--slate-200); margin-bottom: 1.5rem;"></i>
+            <p style="color: var(--slate-400); font-size: 1.125rem;">No featured jobs available right now. Check back later!</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="cta-section" style="text-align: center; padding: 6rem 1.5rem; background: var(--slate-900); border-radius: 2rem; color: white; margin-bottom: 4rem; position: relative; overflow: hidden;">
+    <div style="position: relative; z-index: 1;">
+        <h2 style="color: white; font-size: 2.5rem; margin-bottom: 1.5rem;">Ready to take the next step?</h2>
+        <p style="opacity: 0.7; font-size: 1.125rem; max-width: 600px; margin: 0 auto 3rem;">Join thousands of professionals who have found their dream jobs through JobPortal.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'register' %}" class="btn btn-lg" style="padding: 1rem 2.5rem;">Create Your Profile</a>
+            <a href="{% url 'job_list' %}" class="btn btn-secondary btn-lg" style="padding: 1rem 2.5rem; background: transparent; color: white; border-color: rgba(255,255,255,0.2);">Browse All Jobs</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

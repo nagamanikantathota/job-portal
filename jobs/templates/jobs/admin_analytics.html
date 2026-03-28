@@ -1,0 +1,72 @@
+{% extends 'jobs/base.html' %}
+
+{% block content %}
+<div class="admin-analytics">
+    <h1>Platform Analytics</h1>
+    <div class="jobs-grid" style="margin-bottom: 3rem;">
+        <div class="job-card" style="text-align: center;">
+            <h2 style="color: var(--primary-color);">{{ total_users }}</h2>
+            <p>Total Users</p>
+            <small>{{ total_seekers }} Seekers / {{ total_employers }} Employers</small>
+        </div>
+        <div class="job-card" style="text-align: center;">
+            <h2 style="color: var(--success-color);">{{ total_jobs }}</h2>
+            <p>Total Jobs</p>
+        </div>
+        <div class="job-card" style="text-align: center;">
+            <h2 style="color: var(--info-color);">{{ total_applications }}</h2>
+            <p>Total Applications</p>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <section>
+            <h3>Recent Job Postings</h3>
+            <div class="job-card">
+                <table style="width: 100%; text-align: left;">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Employer</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in recent_jobs %}
+                        <tr>
+                            <td>{{ job.title }}</td>
+                            <td>{{ job.employer.username }}</td>
+                            <td>{{ job.created_at|date:"M d" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h3>Recent Applications</h3>
+            <div class="job-card">
+                <table style="width: 100%; text-align: left;">
+                    <thead>
+                        <tr>
+                            <th>Seeker</th>
+                            <th>Job</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in recent_apps %}
+                        <tr>
+                            <td>{{ app.seeker.username }}</td>
+                            <td>{{ app.job.title|truncatechars:20 }}</td>
+                            <td>{{ app.applied_at|date:"M d" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

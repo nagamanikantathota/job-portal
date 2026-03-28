@@ -1,0 +1,120 @@
+{% extends 'jobs/base.html' %}
+
+{% block content %}
+<div class="dashboard-container" style="max-width: 1280px; margin: 0 auto;">
+    <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem; background: white; padding: 3rem; border-radius: 2rem; border: 1px solid var(--slate-200); box-shadow: var(--shadow-sm);">
+        <div>
+            <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem; letter-spacing: -0.05em;">Employer <span style="color: var(--primary-color);">Console</span></h1>
+            <p style="color: var(--slate-500); font-weight: 500; font-size: 1.125rem;">Manage your active listings and evaluate top talent for your team.</p>
+        </div>
+        <div class="actions" style="display: flex; gap: 1rem;">
+            <a href="{% url 'company_profile' %}" class="btn btn-secondary"><i class="fas fa-building"></i> Company Profile</a>
+            <a href="{% url 'post_job' %}" class="btn"><i class="fas fa-plus"></i> Post New Vacancy</a>
+        </div>
+    </div>
+
+    <div class="stats-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; margin-bottom: 4rem;">
+        <div class="job-card" style="padding: 2rem; border-bottom: 4px solid var(--primary-color);">
+            <p style="color: var(--slate-400); font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; margin-bottom: 1rem;">Live Listings</p>
+            <h3 style="font-size: 2.5rem; margin: 0; color: var(--slate-900);">{{ jobs.count }}</h3>
+        </div>
+        <div class="job-card" style="padding: 2rem; border-bottom: 4px solid var(--success-color);">
+            <p style="color: var(--slate-400); font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; margin-bottom: 1rem;">Total Applications</p>
+            <h3 style="font-size: 2.5rem; margin: 0; color: var(--slate-900);">{{ total_applications_count|default:0 }}</h3>
+        </div>
+        <div class="job-card" style="padding: 2rem; border-bottom: 4px solid var(--info-color);">
+            <p style="color: var(--slate-400); font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; margin-bottom: 1rem;">Avg. Applicants/Job</p>
+            <h3 style="font-size: 2.5rem; margin: 0; color: var(--slate-900);">{{ avg_applicants|default:0|floatformat:1 }}</h3>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <h2 style="font-size: 1.75rem; margin-bottom: 2.5rem;"><i class="fas fa-list-check" style="color: var(--primary-color);"></i> Active Vacancies</h2>
+
+        {% for job in jobs %}
+        <div class="job-card" style="margin-bottom: 3rem; padding: 0; overflow: hidden; border-color: var(--slate-100);">
+            <div style="padding: 2.5rem; background: white; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--slate-100);">
+                <div>
+                    <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
+                        <span class="category-badge" style="margin: 0; background: rgba(99, 102, 241, 0.1); color: var(--primary-color);">{{ job.category.name }}</span>
+                        <span class="category-badge" style="margin: 0; background: rgba(16, 185, 129, 0.1); color: var(--success-color);">{{ job.job_type }}</span>
+                        {% if job.is_featured %}
+                            <span class="category-badge" style="margin: 0; background: rgba(245, 158, 11, 0.1); color: var(--warning-color); border: 1px solid rgba(245, 158, 11, 0.2);">FEATURED</span>
+                        {% endif %}
+                    </div>
+                    <h3 style="font-size: 1.75rem; margin-bottom: 0.75rem;"><a href="{% url 'job_detail' job.pk %}">{{ job.title }}</a></h3>
+                    <div style="display: flex; gap: 2rem;">
+                        <span class="meta" style="margin: 0;"><i class="fas fa-map-marker-alt"></i> {{ job.location }}</span>
+                        <span class="meta" style="margin: 0;"><i class="fas fa-users"></i> {{ job.applications.count }} Applicants</span>
+                        <span class="meta" style="margin: 0;"><i class="fas fa-calendar"></i> Posted {{ job.created_at|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+                <div class="actions" style="display: flex; gap: 0.75rem;">
+                    <a href="{% url 'edit_job' job.pk %}" class="btn btn-secondary" title="Edit Listing"><i class="fas fa-edit"></i></a>
+                    <a href="{% url 'delete_job' job.pk %}" class="btn btn-secondary" style="color: var(--danger-color); background: rgba(239, 68, 68, 0.05); border: none;" title="Delete"><i class="fas fa-trash"></i></a>
+                </div>
+            </div>
+
+            <div class="applicants-section" style="padding: 2.5rem; background: var(--slate-50);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h4 style="margin: 0; font-size: 1.125rem; font-weight: 800; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.05em;">Recent Candidate Applications</h4>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem;">
+                    {% for app in job.applications.all %}
+                    <div class="job-card" style="background: white; padding: 2rem; border-color: var(--slate-200); box-shadow: var(--shadow-sm); transition: transform 0.2s;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+                            <div>
+                                <h5 style="margin: 0; font-size: 1.125rem; color: var(--slate-900);">{{ app.seeker.get_full_name|default:app.seeker.username }}</h5>
+                                <p style="color: var(--slate-500); font-size: 0.875rem; margin-top: 0.25rem;">{{ app.seeker.email }}</p>
+                            </div>
+                            <span class="category-badge" style="margin: 0; font-size: 0.75rem; padding: 0.4rem 0.8rem; background: {% if app.status == 'Selected' %}rgba(16, 185, 129, 0.1); color: #059669{% elif app.status == 'Rejected' %}rgba(239, 68, 68, 0.1); color: #dc2626{% else %}rgba(99, 102, 241, 0.1); color: #2563eb{% endif %};">
+                                {{ app.status }}
+                            </span>
+                        </div>
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <form action="{% url 'update_application_status' app.pk %}" method="post" style="display: flex; gap: 0.5rem;">
+                                {% csrf_token %}
+                                <select name="status" style="flex: 1; padding: 0.625rem; font-size: 0.875rem; border-radius: 0.75rem; background: var(--slate-50); border: 1px solid var(--slate-200);">
+                                    {% for val, label in status_choices %}
+                                        <option value="{{ val }}" {% if app.status == val %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn btn-sm">Update</button>
+                            </form>
+                        </div>
+
+                        <div style="display: flex; gap: 0.75rem; align-items: center; padding-top: 1.25rem; border-top: 1px solid var(--slate-100);">
+                            <a href="{{ app.resume.url }}" target="_blank" class="btn btn-secondary btn-sm" style="flex: 1;"><i class="fas fa-file-pdf"></i> View Resume</a>
+                            {% if app.cover_letter %}
+                            <details style="flex: 1;">
+                                <summary style="font-size: 0.875rem; font-weight: 700; color: var(--primary-color); cursor: pointer; text-align: center; padding: 0.5rem; border-radius: 0.5rem; background: rgba(99, 102, 241, 0.05);">Cover Letter</summary>
+                                <div style="position: absolute; background: white; border: 1px solid var(--slate-200); padding: 1.5rem; border-radius: 1rem; box-shadow: var(--shadow-lg); z-index: 100; margin-top: 0.5rem; width: 300px; font-size: 0.9375rem; line-height: 1.6; color: var(--slate-600);">
+                                    {{ app.cover_letter }}
+                                </div>
+                            </details>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; background: white; border-radius: 1rem; border: 1px dashed var(--slate-200);">
+                        <p style="color: var(--slate-400); font-weight: 500;">No applications received yet for this position.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div style="text-align: center; padding: 6rem; background: white; border-radius: 2.5rem; border: 1px dashed var(--slate-200);">
+            <div style="width: 100px; height: 100px; background: var(--slate-50); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2.5rem;">
+                <i class="fas fa-briefcase fa-3x" style="color: var(--slate-200);"></i>
+            </div>
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">No active listings</h3>
+            <p style="color: var(--slate-400); max-width: 400px; margin: 0 auto 2.5rem;">Ready to find your next great hire? Post your first job vacancy to get started.</p>
+            <a href="{% url 'post_job' %}" class="btn btn-lg">Post Your First Job</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

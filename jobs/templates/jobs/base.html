@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobPortal - Find Your Career</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="{% url 'home' %}" class="logo-text">
+                    Job<span>Portal</span>
+                </a>
+            </div>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'job_list' %}">Browse Jobs</a></li>
+                {% if user.is_authenticated %}
+                    {% if user.profile.user_type == 'employer' %}
+                        <li><a href="{% url 'employer_dashboard' %}">Dashboard</a></li>
+                        <li><a href="{% url 'post_job' %}" class="btn btn-sm">Post a Job</a></li>
+                    {% else %}
+                        <li><a href="{% url 'seeker_dashboard' %}">Dashboard</a></li>
+                        <li><a href="{% url 'profile' %}">My Profile</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'logout' %}" style="color: var(--danger-color); opacity: 0.8;"><i class="fas fa-sign-out-alt"></i></a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Sign In</a></li>
+                    <li><a href="{% url 'register' %}" class="btn btn-sm">Join Now</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {% if message.tags == 'success' %}<i class="fas fa-check-circle"></i>
+                        {% elif message.tags == 'error' %}<i class="fas fa-exclamation-circle"></i>
+                        {% else %}<i class="fas fa-info-circle"></i>{% endif %}
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div style="max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 4rem; text-align: left;">
+            <div>
+                <a href="{% url 'home' %}" class="logo-text" style="color: white; margin-bottom: 1.5rem; display: block;">
+                    Job<span style="color: var(--primary-color);">Portal</span>
+                </a>
+                <p style="opacity: 0.7; font-size: 0.9375rem; line-height: 1.8;">Connecting the world's most passionate talent with the most innovative companies. Your dream career starts here.</p>
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <a href="#" style="color: white; opacity: 0.6;"><i class="fab fa-twitter fa-lg"></i></a>
+                    <a href="#" style="color: white; opacity: 0.6;"><i class="fab fa-linkedin fa-lg"></i></a>
+                    <a href="#" style="color: white; opacity: 0.6;"><i class="fab fa-github fa-lg"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4>For Job Seekers</h4>
+                <ul style="list-style: none; opacity: 0.7; font-size: 0.9375rem; line-height: 2.2;">
+                    <li><a href="{% url 'job_list' %}">Browse Jobs</a></li>
+                    <li><a href="#">Career Roadmap</a></li>
+                    <li><a href="#">Job Alerts</a></li>
+                    <li><a href="#">Salary Tools</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <ul style="list-style: none; opacity: 0.7; font-size: 0.9375rem; line-height: 2.2;">
+                    <li><a href="{% url 'about' %}">About Us</a></li>
+                    <li><a href="{% url 'contact' %}">Contact Support</a></li>
+                    <li><a href="{% url 'faq' %}">Help Center</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="max-width: 1280px; margin: 4rem auto 0; padding: 2rem 1.5rem 0; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <p style="opacity: 0.5; font-size: 0.875rem;">&copy; 2024 JobPortal Inc. All rights reserved.</p>
+            <p style="opacity: 0.5; font-size: 0.875rem;">Made with <i class="fas fa-heart" style="color: var(--danger-color);"></i> for the future of work.</p>
+        </div>
+    </footer>
+</body>
+</html>

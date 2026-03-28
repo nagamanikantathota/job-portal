@@ -1,0 +1,35 @@
+{% extends 'jobs/base.html' %}
+
+{% block content %}
+<div class="company-detail-container">
+    <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; gap: 2rem; align-items: center; margin-bottom: 3rem;">
+        {% if company.logo %}
+            <img src="{{ company.logo.url }}" alt="{{ company.name }}" style="width: 150px; height: 150px; object-fit: contain;">
+        {% endif %}
+        <div>
+            <h1>{{ company.name }}</h1>
+            <p class="meta"><i class="fas fa-map-marker-alt"></i> {{ company.location }}</p>
+            <p class="meta"><i class="fas fa-globe"></i> <a href="{{ company.website }}" target="_blank">{{ company.website }}</a></p>
+            <p style="margin-top: 1rem; color: #555;">{{ company.description }}</p>
+        </div>
+    </div>
+
+    <h2>Jobs at {{ company.name }}</h2>
+    <hr style="margin-bottom: 2rem;">
+    
+    <div class="jobs-grid">
+        {% for job in jobs %}
+        <div class="job-card">
+            <span class="category-badge">{{ job.category.name|default:"General" }}</span>
+            <h3>{{ job.title }}</h3>
+            <p class="meta">{{ job.location }}</p>
+            <div class="actions">
+                <a href="{% url 'job_detail' job.pk %}" class="btn btn-sm">View Details</a>
+            </div>
+        </div>
+        {% empty %}
+        <p>This company has no active job postings.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

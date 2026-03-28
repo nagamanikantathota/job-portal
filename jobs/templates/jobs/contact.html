@@ -1,0 +1,13 @@
+{% extends 'jobs/base.html' %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Contact Us</h2>
+    <p class="meta">Have questions? Fill out the form below and our team will get back to you.</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Send Message</button>
+    </form>
+</div>
+{% endblock %}

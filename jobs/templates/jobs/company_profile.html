@@ -1,0 +1,13 @@
+{% extends 'jobs/base.html' %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Company Profile</h2>
+    <p class="meta">Please provide details about your company to post jobs.</p>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Save Company Details</button>
+    </form>
+</div>
+{% endblock %}
