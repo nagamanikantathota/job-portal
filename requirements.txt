@@ -16,11 +16,9 @@ MarkupSafe==3.0.3
 packaging==26.0
 pillow==12.1.1
 platformdirs==4.5.1
-pypiwin32==223
 pyttsx3==2.99
 sqlparse==0.5.5
 tzdata==2025.3
 virtualenv==20.35.4
-virtualenvwrapper-win==1.2.7
 Werkzeug==3.1.6
 whitenoise==6.12.0
