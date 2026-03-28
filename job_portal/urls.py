@@ -24,6 +24,3 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('jobs.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-def home(request):
-    return render(request, 'home.html')
