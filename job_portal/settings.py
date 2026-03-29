@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-wgp%2_1y1t6mho8mc^*^)dctf51ntlwo5z$3rys814+@m0m-9^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -134,7 +134,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # For development
 DEFAULT_FROM_EMAIL = 'JobPortal <noreply@jobportal.com>'
 
-ALLOWED_HOSTS = ['*']
 STATICFILES_DIRS = [
     BASE_DIR / "jobs/static",
 ]
